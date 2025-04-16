@@ -156,3 +156,113 @@ No Linux, as permissões seguem o modelo POSIX, baseado em três ações (Leitur
 *   **Linux:** As permissões são visualizadas com `ls -l` e modificadas com `chmod`. A representação completa é `rwxrwxrwx` (dono, grupo, outros).
 *   **PowerShell/Windows:** As permissões (ACLs) são visualizadas com `Get-Acl` e modificadas com `Set-Acl`. O comando `Get-ChildItem` (`ls`) no PowerShell exibe um "Mode" (ex: `d-----`, `-a----`) que indica atributos (Directory, Archive, ReadOnly, Hidden, System), não as permissões `rwx` da mesma forma que no Linux. A complexidade das ACLs permite controles muito mais específicos (ex: negar escrita, mas permitir apagar).****
 ___
+
+
+## Redirecionamento de Saída: O Comando `ls > lista_projeto.txt`
+
+Este comando é um exemplo fundamental de como redirecionar a saída de um comando (que normalmente iria para a tela) para um arquivo.
+
+**Análise do Comando:**
+
+*   **`ls`**:
+    *   É o comando Linux para **listar** o conteúdo (arquivos e subdiretórios) do diretório atual.
+    *   Por padrão, a saída deste comando é enviada para a *Saída Padrão* (stdout), que geralmente é o seu terminal/tela.
+
+*   **`>`**:
+    *   Este é o **operador de redirecionamento de saída**.
+    *   Ele instrui o shell a pegar a *Saída Padrão* (stdout) do comando à sua esquerda (`ls`) e, em vez de exibi-la na tela, enviá-la para o destino à sua direita.
+
+*   **`lista_projeto.txt`**:
+    *   Este é o **arquivo de destino** para onde a saída do `ls` será redirecionada.
+
+**O que Acontece:**
+
+1.  O comando `ls` é executado e gera a lista de arquivos e diretórios.
+2.  O operador `>` intercepta essa lista.
+3.  O conteúdo da lista é gravado dentro do arquivo `lista_projeto.txt`.
+    *   **Se `lista_projeto.txt` não existir:** O arquivo será criado no diretório atual.
+    *   **Se `lista_projeto.txt` já existir:** **Seu conteúdo anterior será apagado e substituído** pela nova saída do `ls`. Tenha cuidado com isso!
+4.  Como resultado, a listagem de arquivos **não aparecerá** na tela do terminal.
+
+**Em Resumo:**
+
+O comando `ls > lista_projeto.txt` executa o `ls` e salva sua saída (a lista de arquivos e diretórios) dentro do arquivo `lista_projeto.txt`, criando o arquivo se necessário ou sobrescrevendo-o se ele já existir.
+
+**Equivalente em PowerShell:**
+
+O conceito é idêntico, usando o cmdlet `Get-ChildItem` ou seus aliases:
+
+`powershell`
+Get-ChildItem > lista_projeto.txt
+# Ou usando aliases comuns:
+ls > lista_projeto.txt
+dir > lista_projeto.txt
+
+___
+
+## 📦 Atualização de pacotes: `apt update` no Linux e equivalentes no PowerShell
+
+### 🧭 Tabela Comparativa
+
+| Sistema                       | Comando                | Descrição                                                            |
+| ----------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| **Linux**                     | `sudo apt update`      | Atualiza a lista de pacotes disponíveis nos repositórios do sistema. |
+| **PowerShell com winget**     | `winget upgrade --all` | Atualiza todos os pacotes instalados que possuem novas versões.      |
+| **PowerShell com Chocolatey** | `choco upgrade all -y` | Atualiza todos os pacotes instalados via Chocolatey.                 |
+
+---
+
+### 🔎 Verificar pacotes com `winget`
+
+Para apenas listar os pacotes que possuem atualizações disponíveis (sem instalar nada):
+
+`powershell`
+winget upgrade
+
+___
+
+### ✅ Verificar se o winget está instalado
+
+winget --version
+___
+
+## Resumo de Comandos Linux Comuns
+
+| Comando / Variação           | Descrição                                                                          |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| `rm nome_arquivo`            | Remove o arquivo especificado.                                                     |
+| `rm -i nome_arquivo`         | Remove o arquivo especificado, solicitando confirmação antes (Interativo).         |
+| `rmdir nome_diretorio`       | Remove o diretório especificado, **somente se estiver vazio**.                     |
+| `rm -r nome_diretorio`       | Remove o diretório e todo o seu conteúdo de forma recursiva. **(CUIDADO!)**        |
+| `ls > arquivo.txt`           | Redireciona a saída do `ls` para `arquivo.txt`, **sobrescrevendo-o** se existir.   |
+| `ls >> arquivo.txt`          | **Anexa** (adiciona ao final) a saída do `ls` ao `arquivo.txt` sem sobrescrevê-lo. |
+| `echo "mensagem"`            | Exibe a "mensagem" especificada no terminal (Saída Padrão).                        |
+| `echo "mensagem" >> arq.txt` | **Anexa** o texto "mensagem" ao final do arquivo `arq.txt`.                        |
+| `sudo apt update`            | Atualiza a lista local de pacotes disponíveis nos repositórios (Requer `sudo`).    |
+| `sudo apt upgrade`           | Instala as atualizações disponíveis para os pacotes já instalados (Requer `sudo`). |
+| `sudo apt install <pacote>`  | Instala um novo pacote especificado (Requer `sudo`).                               |
+| `sudo apt remove <pacote>`   | Remove (desinstala) o pacote especificado (Requer `sudo`).                         |
+
+___
+
+## Comandos Linux para Processos, Arquivos e Pipelines
+
+| Comando / Variação      | Descrição                                                                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `top`                   | Exibe uma visão dinâmica e em tempo real dos processos em execução, mostrando uso de CPU, memória, PID, etc.                                                             |
+| `ps`                    | Fornece uma "fotografia" instantânea dos processos em execução.                                                                                                          |
+| `ps aux`                | Lista todos os processos de todos os usuários com detalhes extensivos (%CPU, %MEM, PID, estado, comando).                                                                |
+| `ps -u <usuario>`       | Exibe apenas os processos pertencentes ao `<usuario>` especificado.                                                                                                      |
+| `ps -p <PID>`           | Exibe informações detalhadas sobre o processo com o `<PID>` (Process ID) fornecido.                                                                                      |
+| `ps -C <comando>`       | Filtra e exibe os processos associados ao nome do `<comando>` especificado.                                                                                              |
+| `pstree`                | Mostra a árvore de processos, ilustrando a relação hierárquica (pai/filho) entre eles.                                                                                   |
+| `head <arquivo>`        | Exibe as primeiras linhas (por padrão, 10) de um `<arquivo>` ou da saída de outro comando via pipe.                                                                      |
+| `comando1               | comando2`                                                                                                                                                                | **Pipe (` | `)**: Redireciona a saída padrão do `comando1` para ser a entrada padrão do `comando2`, permitindo encadear comandos. |
+| `sort`                  | Ordena as linhas de um arquivo ou da saída de um comando (recebida via pipe). Útil para organizar dados.                                                                 |
+| `kill <PID>`            | Envia um sinal para o processo com o `<PID>` especificado. O sinal padrão é `SIGTERM` (15), pedindo ao processo para terminar de forma organizada.                       |
+| `kill -9 <PID>`         | Envia o sinal `SIGKILL` (9) para o processo com o `<PID>`. **Força o encerramento imediato e abrupto** (use com cautela, pode haver perda de dados).                     |
+| `kill -STOP <PID>`      | Envia o sinal `SIGSTOP` (19) para o processo, **pausando** sua execução sem encerrá-lo.                                                                                  |
+| `kill -CONT <PID>`      | Envia o sinal `SIGCONT` (18) para o processo, **retomando** a execução de um processo que foi pausado com `SIGSTOP`.                                                     |
+| `pkill <nome_processo>` | Envia um sinal (padrão `SIGTERM`) para todos os processos cujo nome corresponda a `<nome_processo>`. **Afeta múltiplos processos**.                                      |
+| `killall <nome_exato>`  | Envia um sinal (padrão `SIGTERM`) para todos os processos cujo nome corresponda *exatamente* a `<nome_exato>`. Similar ao `pkill`, mas geralmente mais restrito no nome. |
+___
